@@ -18,7 +18,7 @@ test("custom cwd selection installs validated identity before changing cwd", () 
   assert.ok(cwdUpdate > identityUpdate, "identity is retained before cwd changes");
 });
 
-test("custom cwd selection remembers the last validated path for the picker", () => {
+test("custom cwd selection starts from the current project and remembers validated paths", () => {
   assert.match(customPathSource, /saveLastCustomCwd\(data\.cwd\)/);
-  assert.match(source, /initialPath=\{customPathValue\}/);
+  assert.match(source, /initialPath=\{selectedCwd \|\| customPathValue \|\| undefined\}/);
 });
