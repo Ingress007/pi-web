@@ -1016,7 +1016,7 @@ export function SessionSidebar({ selectedSessionId, onSelectSession, onNewSessio
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       {customPathOpen && (
         <DirectoryPicker
-          initialPath={customPathValue}
+          initialPath={selectedCwd || customPathValue || undefined}
           busy={customPathValidating}
           error={customPathError}
           onCancel={() => {
