@@ -22,3 +22,13 @@ test("custom cwd selection starts from the current project and remembers validat
   assert.match(customPathSource, /saveLastCustomCwd\(data\.cwd\)/);
   assert.match(source, /initialPath=\{selectedCwd \|\| customPathValue \|\| undefined\}/);
 });
+
+test("default cwd is selected through the same validation as a custom path", () => {
+  const defaultStart = source.indexOf("const handleDefaultCwd = useCallback");
+  const defaultEnd = source.indexOf("const handleCreateWorktree", defaultStart);
+  const defaultSource = source.slice(defaultStart, defaultEnd);
+  assert.notEqual(defaultStart, -1);
+  assert.match(defaultSource, /commitCustomPath\(data\.cwd, \{ remember: false \}\)/);
+  assert.doesNotMatch(defaultSource, /setSelectedCwd\(/);
+  assert.match(customPathSource, /if \(remember\) \{\s*saveLastCustomCwd\(data\.cwd\)/);
+});
