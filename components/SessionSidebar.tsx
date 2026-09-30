@@ -1173,7 +1173,7 @@ export function SessionSidebar({ selectedSessionId, onSelectSession, onNewSessio
     >
       {customPathOpen && (
         <DirectoryPicker
-          initialPath={selectedCwd || customPathValue || undefined}
+          initialPath={customPathValue}
           busy={customPathValidating}
           error={customPathError}
           onCancel={() => {

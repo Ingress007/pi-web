@@ -166,7 +166,9 @@ export function DirectoryPicker({ onCancel, onSelect, initialPath, busy = false,
     setCreateError(null);
   };
 
-  const handleCreateDirectory = async (selectAfterCreate: boolean) => {
+  // Open the new directory rather than selecting it, so "Select this folder" stays the
+  // picker's only commit point and nested folders can be created the same way.
+  const handleCreateDirectory = async () => {
     const name = directoryName.trim();
     if (!currentPath || !name || creating) return;
 
@@ -176,11 +178,7 @@ export function DirectoryPicker({ onCancel, onSelect, initialPath, busy = false,
       const createdPath = await createDirectory(currentPath, name);
       setCreateOpen(false);
       setDirectoryName("");
-      if (selectAfterCreate) {
-        onSelect(createdPath);
-      } else {
-        await navigateTo(currentPath);
-      }
+      await navigateTo(createdPath);
     } catch (cause) {
       setCreateError(cause instanceof Error ? cause.message : String(cause));
     } finally {
@@ -313,7 +311,7 @@ export function DirectoryPicker({ onCancel, onSelect, initialPath, busy = false,
               setCreateError(null);
             }}
             disabled={!canCreate}
-            style={{ ...primaryActionStyle, marginRight: "auto", opacity: canCreate ? 1 : 0.6, cursor: canCreate ? "pointer" : "default" }}
+            style={{ ...secondaryActionStyle, marginRight: "auto", opacity: canCreate ? 1 : 0.6, cursor: canCreate ? "pointer" : "default" }}
           >
             {t("directoryPicker.newDirectory")}
           </button>
@@ -347,7 +345,7 @@ export function DirectoryPicker({ onCancel, onSelect, initialPath, busy = false,
               aria-label={t("directoryPicker.createDirectory")}
               onSubmit={(event) => {
                 event.preventDefault();
-                void handleCreateDirectory(true);
+                void handleCreateDirectory();
               }}
               style={{ ...panelSurfaceStyle, width: 400, maxWidth: "100%" }}
             >
@@ -379,18 +377,9 @@ export function DirectoryPicker({ onCancel, onSelect, initialPath, busy = false,
                     className="directory-picker-action"
                     type="submit"
                     disabled={creating || !directoryName.trim()}
-                    style={{ ...primaryActionStyle, flex: 1.2, opacity: creating ? 0.65 : 1, cursor: creating || !directoryName.trim() ? "default" : "pointer" }}
-                  >
-                    {creating ? t("directoryPicker.creating") : t("directoryPicker.confirmAndSelect")}
-                  </button>
-                  <button
-                    className="directory-picker-action"
-                    type="button"
-                    onClick={() => void handleCreateDirectory(false)}
-                    disabled={creating || !directoryName.trim()}
                     style={{ ...primaryActionStyle, flex: 1, opacity: creating ? 0.65 : 1, cursor: creating || !directoryName.trim() ? "default" : "pointer" }}
                   >
-                    {t("directoryPicker.confirm")}
+                    {creating ? t("directoryPicker.creating") : t("directoryPicker.create")}
                   </button>
                   <button
                     className="directory-picker-action"
